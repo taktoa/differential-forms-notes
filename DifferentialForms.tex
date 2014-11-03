@@ -1,0 +1,156 @@
+\documentclass[a4paper,11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{url}
+\usepackage{indentfirst}
+\usepackage[colorlinks]{hyperref}
+\usepackage[compact]{titlesec}
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{minted}
+
+\singlespacing
+
+
+\titleformat{\chapter}[display]   
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}   
+\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+
+\newcommand{\unit}[1]{\ensuremath{\, \mathrm{#1}}}
+\newcommand{\pderiv}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+\newcommand{\real}{\ensuremath{\mathbb{R}}}
+\newcommand{\diff}{\ensuremath{\, \mathrm{d}}}
+\newcommand{\degree}{\ensuremath{^\circ}}
+\newcommand{\ihat}{\hat{\imath}}
+\newcommand{\jhat}{\hat{\jmath}}
+\def\tol#1#2#3{\hbox{\rule{0pt}{15pt}${#1}^{+{#2}}_{-{#3}}$}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclareRobustCommand{\zvec}[1]{%
+  \mathrlap{\vec{\mkern-2mu\phantom{#1}}}#1%
+}
+\title{Differential Forms Notes}
+\author{Remy Goldschmidt}
+
+\begin{document}
+\maketitle
+
+\chapter{Introduction}
+\section{1-forms}
+\begin{itemize} \itemsep -2pt
+    \item A 0-form is just a scalar function $P : \real^n \to \mathbb{R}$
+    \item A 1-form is a linear combination of functions ($P_1, P_2, \dots P_n : \mathbb{R}^n \to \mathbb{R}$) and differential elements ($\diff x_1, \diff x_2, \dots \diff x_n$)
+    \item These are familiar from calculus: they are seen in, e.g.: $\int_C P \diff x + Q \diff y + R \diff z$
+    \item For some vector field $\mathbf{F} : \real^3 \to \real^3$ we define a 1-form $\widetilde{F} = F_x \diff x + F_y \diff y + F_z \diff z$
+    \item This generalizes in the obvious way to $\real^n$
+    \item In $\real^n$ there are $n$ basis 1-forms, i.e.: $\diff x_1, \diff x_2, \dots \diff x_n$
+    \item The degree of a form $\alpha$ is denoted by $\abs{\alpha}$
+    \item For example: $\abs{\diff x_1} = 1$, $\abs{P} = 0$
+\end{itemize}
+
+\section{Exterior products}
+\begin{itemize} \itemsep -2pt
+    \item The exterior (or wedge) product of two forms $\alpha$ and $\beta$ is denoted $\alpha \wedge \beta$
+    \item $(\wedge) : \mathrm{Form}^p \to \mathrm{Form}^q \to \mathrm{Form}^{p + q}$
+    \item The wedge product of two basis forms is a new basis form
+    \item For example: $\diff x_1 \wedge \diff x_2$ is a basis 2-form
+    \item The wedge product is anticommutative on 1-forms: $\diff x_1 \wedge \diff x_2 = -\diff x_2 \wedge \diff x_1$
+    \item This generalizes to $p$ and $q$-forms: $\alpha \wedge \beta = (-1)^{\abs{\alpha} \abs{\beta}} (\beta \wedge \alpha)$
+    \item The wedge product is linear and associative. The wedge product on 0-forms is just scalar multiplication.
+    \item $\diff V = \diff x_1 \wedge \diff x_2 \wedge \dots \wedge \diff x_n$ in $\real^n$ (this is the volume form)
+    \item The product of a 0-form and the volume form is known as a pseudoscalar, because it behaves like a scalar except its sign will flip under parity inversions
+\end{itemize}
+
+\section{Interior products}
+\begin{itemize} \itemsep -2pt
+    \item The interior product of a vector $\zvec{r} : \real^n$ and a $p$-form $\alpha$ is denoted by $\iota_{\zvec{r}} \, \alpha$, a $(p-1)$-form
+    \item For a basis vector $\zvec{e}_i$ and a basis form $\diff x_j$, $\iota_{\zvec{e}_i} \diff x_j = \delta_{i j} = \begin{cases} 1 & \mathrm{if} \, i = j \\ 0 & \mathrm{if} \, i \ne j\end{cases}$
+    \item The interior product is linear in both arguments: \\
+        $a, b : \real;\, \, \zvec{r}, \zvec{m}, \zvec{n} : \real^n;\, \, \alpha, \beta : \mathrm{Form}^p$ \\
+        $\zvec{s} = a (\zvec{m} + \zvec{n});\, \, \gamma = b (\alpha + \beta)$ \\
+        $\iota_{\zvec{s}} \alpha = a (\iota_{\zvec{m}} \alpha + \iota_{\zvec{n}} \alpha)$ \\
+        $\iota_{\zvec{r}} \gamma = b (\iota_{\zvec{r}} \alpha + \iota_{\zvec{r}} \beta)$
+    \item The interior product is antisymmetric: $\iota_{\zvec{m}} \iota_{\zvec{n}} \alpha = -\iota_{\zvec{n}} \iota_{\zvec{m}} \alpha$
+    \item The interior product is nilpotent: $\iota_{\zvec{m}} \iota_{\zvec{m}} \alpha = 0$
+    \item The interior product over wedge products: $\iota_{\zvec{m}} (\alpha \wedge \beta) = (\iota_{\zvec{m}} \alpha) \wedge \beta + (-1)^{\abs{\alpha}} (\alpha \wedge (\iota_{\zvec{m}} \beta))$
+\end{itemize}
+
+\section{Dot products}
+\begin{itemize} \itemsep -2pt
+    \item The dot product of a $p$-form and a $q$-form is zero if $p \neq q$, unless $p = 0$ or $q = 0$, in which case it is scalar multiplication
+    \item The dot product of $\alpha$ and $\beta$ is denoted $\alpha \cdot \beta$
+    \item If $\displaystyle \alpha = \sum^{p}_{i = 1} P_i \diff x_i$ and $\displaystyle \beta = \sum^{p}_{j = 1} Q_j \diff x_j$ then $\displaystyle \alpha \cdot \beta = \sum^{p}_{k = 1} P_k Q_k$
+    \item The dot product is commutative, linear, and associative.
+\end{itemize}
+
+\section{Hodge dual}
+\begin{itemize} \itemsep -2pt
+    \item The Hodge dual of a $p$-form in $\real^n$ is a $(n - p)$-form, and is denoted by $\star \alpha$
+    \item The Hodge dual relates to the dot product by: $\star (\alpha \wedge (\star \beta)) = \alpha \cdot \beta$
+    \item The Hodge dual of a scalar is a pseudoscalar: $\star f = f \diff V$
+    \item The Hodge dual of a pseudoscalar is a scalar: $\star (f \diff V) = f$
+    \item The Hodge dual is idempotent: $\star \star \alpha = \alpha$
+    \item The Hodge dual is distributive: $\star (\alpha + \beta) = (\star \alpha) + (\star \beta)$
+\end{itemize}
+
+\section{Exterior derivative}
+\begin{itemize} \itemsep -2pt
+    \item So far we have dealt with $\mathrm{d}$ operator applied to functions of the form $f = x_k \to \diff f = \diff x_k$
+    \item The exterior derivative is linear: $\diff (a f + b g) = a (\diff f) + b (\diff g)$
+    \item The exterior derivative is nilpotent: $\diff (\diff \alpha) = 0$
+    \item The exterior derivative over wedge products: $\diff (\alpha \wedge \beta) = \diff \alpha \wedge \beta + (-1)^{\abs{\alpha}} (\alpha \wedge \diff \beta)$
+    \item A form $\alpha$ is closed if $\diff \alpha = 0$.
+    \item A closed form $\alpha$ is exact if there exists some $\beta$ such that $\alpha = \diff \beta$
+    \item Useful properties:
+        $\diff f = \widetilde{\nabla f}$ (f is a 0-form)
+\end{itemize}
+
+\chapter{Problems}
+\section{Electrodynamics}
+\begin{itemize} \itemsep -2pt
+    \item The Minkowski metric has a signature of $(-, +, +, +)$
+    \item Thus, we define our basis forms: $\diff t = -\diff x_1, \diff x = \diff x_2, \diff y = \diff x_3, \diff z = \diff x_4$
+    \item Also, terms with $\diff t$ in the dot product of two forms are now negative
+    \item For example, $\widetilde{P} \cdot \widetilde{Q} = -P_0 Q_0 + P_1 Q_1 + P_2 Q_2 + P_3 Q_3$, where $\mathbf{P}$ and $\mathbf{Q}$ are vector fields
+    \item Additionally, for some vector field $\mathbf{V}$, it is now the case that $\widetilde{V} = V_0 \diff t + V_1 \diff x + V_2 \diff y + V_3 \diff z$
+    \item The Maxwell 2-form is defined by: \\
+        $F = E_1 \diff t \wedge \diff x + E_2 \diff t \wedge \diff y + E_3 \diff t \wedge \diff z + B_1 \diff y \wedge \diff z + B_2 \diff z \wedge \diff x + B_1 \diff x \wedge \diff y$
+    \item Problem 1: Calculate $\diff F$
+    \item Problem 2: Restate $\diff F = 0$ in terms of vector calculus
+    \item Problem 3: If $\diff F = 0$, there is probably an $A$ such that $F = \diff A$. Find this $A$.
+    \item Problem 4: Restate $F = \diff A$ in terms of vector calculus
+    \item Problem 5: Redefine $\star \alpha$ in terms of the new (Minkowski metric) dot product.
+    \item Problem 6: Find the Hodge dual of all the basis forms.
+    \item Problem 7: Calculate $\widetilde{J} = \star \diff (\star F)$
+    \item Problem 8: Restate $\widetilde{J} = \star \diff (\star F)$ in terms of vector calculus
+    \item For some particle with a velocity of $\zvec{v} = (v_1, v_2, v_3)$, its 4-velocity is $\zvec{u}$, where: \\
+        $\zvec{u} = \gamma(1, v_1, v_2, v_3)$ \\
+        $\gamma = \frac{1}{1 - \abs{\zvec{v}}^2}$
+    \item At a sufficiently low velocity, $\gamma = 1$
+    \item Problem 9: If a particle has a charge of $q$ and a mass of $m$, calculate $\widetilde{w} = -q \cdot \iota_{\zvec{u}} F$
+    \item Problem 10: What does the time component of $\zvec{w}$ correspond to? The spatial components?
+\end{itemize}
+
+\section{TODO}
+\begin{itemize} \itemsep -2pt
+    \item Add generalized n-dimensional Stokes'/Green's/divergence theorem
+    \item Tensor shit?
+\end{itemize}
+%\chapter{Code}
+%\inputminted[mathescape,
+               %linenos,
+               %numbersep=5pt,
+               %frame=lines,
+               %framesep=2mm]{racket}{plot-generator.rkt}
+
+%\chapter{Conclusion}
+%All these values seem fairly reasonable in context.
+\end{document}
+
